@@ -27,7 +27,11 @@ git clone https://github.com/mnquang02122001/Lung-Xray-Detection-YoloV5
 - Start application:
 
 ```bash
-python yolov5/svr_model
+cd yolov5
+```
+
+```bash
+python svr_model.py
 ```
 
 And you are ready to go!
