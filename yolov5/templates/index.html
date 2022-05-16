@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-ray detection</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet" />
+    <style>
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hero-section {
+            background-image: url(static/hero.jpg);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            width: 100%;
+            height: 50vh;
+        }
+        .content{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 3rem 0 0 0;
+        }
+        .upload_hint {
+            font-size: 0.8rem;
+        }
+        .upload_tag {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #494F6F;
+        }
+        .upload_part {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .result_part {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .upload_button {
+            font-size: 1.2rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            background-color: #1393A8;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin-top: 1.5rem;
+        }
+        .upload_button:hover {
+            opacity: 0.8;
+        }
+        .xray_image {
+            max-width: 550px; 
+            border-radius: 1rem;
+            margin: 2rem auto;
+        }
+        .result_id {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border: 1px solid black;
+            font-size: 1.2rem;
+            padding: 0.5rem 0rem;
+        }
+        h1 {
+            font-size: 3rem;
+            margin: 0 0 0 1rem;
+        }
+        h3 {
+            border: 1px solid black;
+            background-color: #1393A8;
+            color: #fff;
+            padding: 0.5rem 0rem;
+            width: 37rem;
+            text-align: center;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class='header'>
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark" style="background-color: #494F6F;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='hospital-svgrepo-com.svg') }}" alt="logo" width="40" height="40"
+                    class="d-inline-block align-text-top" style="margin-right: 1rem">
+                <div>Smart diagnosis</div>
+                </a>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Doctors</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">News</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#footer">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class='body'>
+        <div class="hero-section"></div>
+        <div class="content">
+            <div class="upload_tag">
+                <i class="fa-3x fa-solid fa-file-image"></i>
+                <h1>Lung diseases detection</h1>
+            </div>
+            <div class='upload_part'>
+                <button class='upload_button' id="upload_button">Select image</button>
+                <div class='upload_hint' id='upload_hint'>
+                    PNG, JPG or JPEG.
+                </div>
+                <form action="/" method="POST" enctype="multipart/form-data" id='form'>
+                    <input type="file" name="file" id="fileinput" style="display: none;" accept="image/*">
+                </form>
+            </div>
+            <div class='result_part'>
+                {% if msg %}
+                {% if xray_image %}
+                <img class="xray_image" src="{{ url_for('static', filename=xray_image) }}?{{ rand }}"
+                    alt="X-ray Image">
+                {% endif %}
+                {% if extra %}
+                <div class="result_report">
+                    <h3>Report</h3>
+                    <div class='result_id'>{{ extra }}</div>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="text-center text-lg-start text-white" style="background-color: #494F6F; margin-top: 5rem;">
+        <!-- Section: Social media -->
+        <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+            <!-- Left -->
+            <div class="me-5 d-none d-lg-block">
+                <span>Get connected with us on social networks:</span>
+            </div>
+            <!-- Left -->
+    
+            <!-- Right -->
+            <div>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-google"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="" class="me-4 text-reset">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <!-- Right -->
+        </section>
+        <!-- Section: Social media -->
+    
+        <!-- Section: Links  -->
+        <section class="">
+            <div class="container text-center text-md-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                        <!-- Content -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            <i class="fas fa-gem me-3"></i>Smart diagnosis
+                        </h6>
+                        <p>
+                            Smart diagnosis is the No.1 Medical Diagnostic Platform in Vietnam.
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+    
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Useful links
+                        </h6>
+                        <p>
+                            <a href="#!" class="text-reset">About us</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Services</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Doctors</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">News</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+    
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Other
+                        </h6>
+                        <p>
+                            <a href="#!" class="text-reset">Privacy Policy</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Tutorial</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">FAQ</a>
+                        </p>
+                        <p>
+                            <a href="#!" class="text-reset">Report</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+    
+                    <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Contact
+                        </h6>
+                        <p><i class="fas fa-home me-3"></i> Vo Chi Cong, Ha Noi, Viet Nam</p>
+                        <p>
+                            <i class="fas fa-envelope me-3"></i>
+                            info@example.com
+                        </p>
+                        <p><i class="fas fa-phone me-3"></i> 0123456789</p>
+                        <p><i class="fas fa-print me-3"></i> 0123456789</p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+            </div>
+        </section>
+        <!-- Section: Links  -->
+    
+        <!-- Copyright -->
+        <div class="text-center p-4 text-dark" style="background-color: #fff">
+            © 2022 Copyright:
+            <a class="text-reset fw-bold" href="https://mdbootstrap.com/">smartdiagnosis.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+</body>
+    <script>
+        document.querySelector('#upload_button').addEventListener('click', function () {
+            document.querySelector('#fileinput').click();
+        });
+        document.querySelector('#fileinput').addEventListener('change', function () {
+            document.querySelector('#form').submit();
+            document.querySelector('#upload_hint').textContent = 'Đang tải file ' + document.querySelector('#fileinput').files[0].name + ' lên server...';
+        });
+    </script>
+</html>
